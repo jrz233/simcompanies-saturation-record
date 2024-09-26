@@ -30,7 +30,7 @@ jobs:
       run: |
         set -e
         mkdir -p ${{ env.OUTPUT_DIR }}
-        cp data/*_saturation.json ${{ env.OUTPUT_DIR }} || { echo "复制文件失败"; exit 1; }
+        cp ./data/*_saturation.json ${{ env.OUTPUT_DIR }} || { echo "复制文件失败"; exit 1; }
       if: always()  # 无论前面步骤是否出错，都会执行
 
     - name: Commit changes      
