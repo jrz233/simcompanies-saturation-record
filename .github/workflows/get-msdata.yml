@@ -8,9 +8,7 @@ on:
 jobs:
   run-script:
     runs-on: ubuntu-latest
-    env:
-      OUTPUT_DIR: ./data
-
+    
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v3  # 检出仓库代码
@@ -26,19 +24,12 @@ jobs:
     - name: Run GetSaturateData
       run: node GetSaturateData.js # 获取市场饱和度
 
-    - name: Save output files
-      run: |
-        set -e
-        mkdir -p ${{ env.OUTPUT_DIR }}
-        cp ./data/*_saturation.json ${{ env.OUTPUT_DIR }} || { echo "复制文件失败"; exit 1; }
-      if: always()  # 无论前面步骤是否出错，都会执行
-
     - name: Commit changes      
       run: |        
         git config --local user.email "79193800+jrz233@users.noreply.github.com"        
         git config --local user.name "jrz233"
         export TZ="Asia/Shanghai"
-        git add ${{ env.OUTPUT_DIR }}/        
+        git add data/        
         timestamp=$(date +"%Y-%m-%d %H:%M:%S")        
         git commit -m "自动提交: $timestamp" || { echo "没有要提交的更改"; exit 0; }        
         git pull https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git main || true  # 出错不停止          
