@@ -74,7 +74,7 @@ async function checkTodayDataExists(filename) {
     try {
         const rawData = await fs.readFile(filePath, 'utf-8');
         const fileData = JSON.parse(rawData); // 解析JSON
-        //console.log(`[DEBUG] 文件内容: ${JSON.stringify(fileData, null, 0)}`); // 输出文件内容，便于调试
+        console.log(`[DEBUG] 文件内容: ${JSON.stringify(fileData, null, 0)}`); // 输出文件内容，便于调试
         if (fileData[currentDate]) { // 判断今天的数据是否已经存在
             console.log(`[INFO] 文件 ${filename} 中今天的数据已存在。`);
             return true; // 今天的数据已经存在
