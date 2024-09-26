@@ -121,7 +121,7 @@ async function saveDataToFile(filename, realm_id, data) {
     }
 
     try {
-        await fs.writeFile(filePath, JSON.stringify(fileData, null, 4));
+        await fs.writeFile(filePath, JSON.stringify(fileData, null, 0));
         console.log(`[INFO] 数据已成功保存到 ${filename}`);
     } catch (error) {
         console.error(`[ERROR] 写入数据到文件时发生错误: ${error.message}`);
