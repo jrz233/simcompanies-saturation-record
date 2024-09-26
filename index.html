@@ -328,6 +328,11 @@
                     series: currentFilteredSeries,
                     legend: {
                         data: currentFilteredSeries.map(series => series.name),
+                        selected: {
+                            // 默认隐藏
+                            '圣诞脆饼': false,
+                            '圣诞装饰品': false
+                        },
                         type: 'plain',
                         bottom: 60, // 图例现在位于滚动条之上
                         textStyle: {
