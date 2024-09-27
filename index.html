@@ -124,6 +124,8 @@
                 <button type="button" class="btn btn-secondary" data-chart="electronicsStore">电子商店</button>
                 <button type="button" class="btn btn-secondary" data-chart="carDealership">车行</button>
                 <button type="button" class="btn btn-secondary" data-chart="aerospace">航天</button>
+                <button type="button" class="btn btn-secondary" data-chart="season">季节产品</button>
+                
             </div>
         </div>
     </div>
@@ -185,21 +187,23 @@
             '柴油': 12, '智能手机': 24, '平板电脑': 25, '笔记本电脑': 26, '显示器': 27, '电视机': 28,
             '经济电动车': 53, '豪华电动车': 54, '经济燃油车': 55, '豪华燃油车': 56, '卡车': 57,
             '内衣': 60, '手套': 61, '裙子': 62, '高跟鞋': 63, '手袋': 64, '运动鞋': 65,
-            '圣诞脆饼': 67, '名牌手表': 70, '项链': 71, '无人机': 98, '砖块': 102, '水泥': 103,
+            '名牌手表': 70, '项链': 71, '无人机': 98, '砖块': 102, '水泥': 103,
             '木板': 108, '窗户': 109, '工具': 110, '咖啡粉': 119, '蔬菜': 120, '面包': 121,
             '芝士': 122, '苹果派': 123, '橙汁': 124, '苹果汁': 125, '姜汁汽水': 126, '披萨': 127,
-            '面条': 128, '巧克力': 140, '圣诞装饰品': 144, '亚轨道火箭': 91, 'BFR': 94,
-            '喷气客机': 95, '豪华飞机': 96, '单引擎飞机': 97, '人造卫星': 99
+            '面条': 128, '巧克力': 140, '亚轨道火箭': 91, 'BFR': 94,
+            '喷气客机': 95, '豪华飞机': 96, '单引擎飞机': 97, '人造卫星': 99, 
+            '圣诞脆饼': 67, '圣诞装饰品': 144, '南瓜': 146, '杰克灯笼': 147, '女巫服': 148
         };
 
         const idMappings = {
-            freshStore: [3, 4, 5, 7, 8, 9, 67, 119, 122, 123, 124, 125, 126, 127, 140, 144],
+            freshStore: [3, 4, 5, 7, 8, 9, 119, 122, 123, 124, 125, 126, 127, 140],
             hardwareStore: [102, 103, 108, 109, 110],
             gasStation: [11, 12],
             fashionStore: [60, 61, 62, 63, 64, 65, 70, 71],
             electronicsStore: [24, 25, 26, 27, 28, 98],
             carDealership: [53, 54, 55, 56, 57],
-            aerospace: [91, 94, 95, 96, 97, 99]
+            aerospace: [91, 94, 95, 96, 97, 99],
+            season: [67, 144, 146, 147, 148]
         };
 
         let labelState = 2;
@@ -247,7 +251,8 @@
                                 fashionStore: '时装商店',
                                 electronicsStore: '电子产品商店',
                                 carDealership: '车行',
-                                aerospace: '航天'
+                                aerospace: '航天',
+                                season: '季节产品'
                             }[key] + ' 饱和度',
                             dates: dates,
                             seriesData: seriesData
@@ -352,8 +357,8 @@
                         data: currentFilteredSeries.map(series => series.name),
                         selected: {
                             // 默认隐藏
-                            '圣诞脆饼': false,
-                            '圣诞装饰品': false
+                           // '圣诞脆饼': false,
+                           // '圣诞装饰品': false
                         },
                         type: 'plain',
                         bottom: 60, // 图例现在位于滚动条之上
