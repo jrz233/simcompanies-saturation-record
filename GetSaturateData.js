@@ -66,35 +66,12 @@ async function ensureDirectoryExistence(filePath) {
     }
 }
 
-// 检查文件是否已有今天的数据
-async function checkTodayDataExists(filename) {
-    const filePath = path.resolve(__dirname, filename);
-    const currentDate = getFormattedDate(); // 获取今天的日期
-    console.log(`[DEBUG] 当前日期: ${currentDate}`); // 输出当前日期，便于调试
-    try {
-        const rawData = await fs.readFile(filePath, 'utf-8');
-        const fileData = JSON.parse(rawData); // 解析JSON
-        //console.log(`[DEBUG] 文件内容: ${JSON.stringify(fileData, null, 0)}`); // 输出文件内容，便于调试
-        if (fileData[currentDate]) { // 判断今天的数据是否已经存在
-            console.log(`[INFO] 文件 ${filename} 中今天的数据已存在。`);
-            return true; // 今天的数据已经存在
-        } else {
-            console.log(`[INFO] 文件 ${filename} 中没有找到今天的数据。`);
-        }
-    } catch (error) {
-        if (error.code !== 'ENOENT') {
-            console.error(`[ERROR] 读取或解析现有文件时发生错误: ${error.message}`);
-        }
-    }
-    return false;
-}
-
-
 // 保存数据到文件
 async function saveDataToFile(filename, realm_id, data) {
     const filePath = path.resolve(__dirname, filename);
     await ensureDirectoryExistence(filePath);
     let fileData = {};
+    
     try {
         const rawData = await fs.readFile(filePath, 'utf-8');
         fileData = JSON.parse(rawData);
@@ -105,9 +82,11 @@ async function saveDataToFile(filename, realm_id, data) {
             return;
         }
     }
+
     const currentDate = getFormattedDate();
-    fileData[currentDate] = { ...fileData[currentDate], ...data };
-    
+    // 更新今天的数据
+    fileData[currentDate] = { ...data };
+
     // 备份文件
     try {
         const backupPath = `${filePath}.bak`;
@@ -120,7 +99,6 @@ async function saveDataToFile(filename, realm_id, data) {
             console.error(`[ERROR] 备份文件时发生错误: ${error.message}`);
         }
     }
-    
     try {
         // 保存为压缩的 JSON 格式
         await fs.writeFile(filePath, JSON.stringify(fileData, null, 0));
@@ -128,10 +106,8 @@ async function saveDataToFile(filename, realm_id, data) {
     } catch (error) {
         console.error(`[ERROR] 写入数据到文件时发生错误: ${error.message}`);
     }
-    
     await cleanOldData(filePath); // 清理旧数据
 }
-
 
 // 清理超过一年的数据
 async function cleanOldData(filePath) {
@@ -162,27 +138,20 @@ async function cleanOldData(filePath) {
 async function run() {
     const realmIds = [0, 1]; // 分别获取 realm 0 和 1 的数据
     const filenames = ['data/R1_saturation.json', 'data/R2_saturation.json'];
-
     const tasks = realmIds.map(async (realm_id, index) => {
         const filename = filenames[index];
         console.log(`[INFO] 开始处理 realm ${realm_id}。`);
 
-        // 检查是否已有今天的数据，已有则跳过获取数据
-        const dataExists = await checkTodayDataExists(filename);
-        if (dataExists) {
-            console.log(`[INFO] 跳过 realm ${realm_id} 的数据获取，因为今天的数据已存在。`);
-            return;
-        }
-
         try {
+            // 获取市场饱和度数据
             const marketData = await checkId3Saturation(realm_id);
+            // 保存今天的数据，并覆盖旧的今天的数据
             await saveDataToFile(filename, realm_id, marketData);
             console.log(`[INFO] realm ${realm_id} 的数据已成功获取并保存。`);
         } catch (error) {
             console.error(`[ERROR] 处理 realm ${realm_id} 时发生错误: ${error.message}`);
         }
     });
-
     await Promise.all(tasks); // 并行执行所有任务
     console.log('[INFO] 所有任务已完成。');
 }
